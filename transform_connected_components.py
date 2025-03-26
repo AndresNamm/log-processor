@@ -1,7 +1,6 @@
-segmentation_file_path = 'all/IMG_0055_00000.png'
-
 import cv2
 import numpy as np
+import os
 
 def keep_largest_component(img_path, output_path):
     # 1) Load image in grayscale
@@ -35,10 +34,27 @@ def keep_largest_component(img_path, output_path):
     # 6) (Optional) Morphological operations to remove small holes or smooth edges:
     #    - For example, opening to remove small white specks inside black or 
     #      closing to fill small black holes inside white.
-    #    - Typically: cv2.morphologyEx(final_mask, cv2.MORPH_OPEN, kernel), etc.
+    #    - Typically: 
+    kernel = np.ones((5,5),np.uint8)  # You can adjust the kernel size
+    final_mask = cv2.morphologyEx(final_mask, cv2.MORPH_CLOSE, kernel) # Closing operation
+    final_mask = cv2.morphologyEx(final_mask, cv2.MORPH_OPEN, kernel)  # Opening operation
 
     # 7) Save or return the processed mask
     cv2.imwrite(output_path, final_mask)
 
 # Example usage:
-keep_largest_component("input.png", "output.png")
+
+folder_path = "all" 
+result_path = "all_transformed"
+all_files = os.listdir(folder_path)
+all_files_length = len(all_files)
+for idx, filename in enumerate(all_files):
+    step = max(1, int(all_files_length * 0.05))
+    if (idx + 1) % step == 0:
+        progress = round(((idx + 1) / all_files_length) * 100, 2)
+        print(f"{progress}% processed")
+    if filename.endswith(".png") or filename.endswith(".jpg"):  # Check for image files
+        img_path = os.path.join(folder_path, filename)
+        output_path = os.path.join(result_path, filename)
+        keep_largest_component(img_path, output_path)
+
