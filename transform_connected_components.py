@@ -44,17 +44,33 @@ def keep_largest_component(img_path, output_path):
 
 # Example usage:
 
-folder_path = "all" 
-result_path = "all_transformed"
-all_files = os.listdir(folder_path)
-all_files_length = len(all_files)
-for idx, filename in enumerate(all_files):
+segmentation_files = []
+segmentation_dir = 'segmentations'
+
+for root, dirs, files in os.walk(segmentation_dir):
+    for file in files:
+        segmentation_files.append(os.path.join(root, file))
+
+all_files_length =  len(segmentation_files)
+result_path = "transformed"
+
+
+for idx, file_path in enumerate(segmentation_files):
     step = max(1, int(all_files_length * 0.05))
     if (idx + 1) % step == 0:
         progress = round(((idx + 1) / all_files_length) * 100, 2)
         print(f"{progress}% processed")
-    if filename.endswith(".png") or filename.endswith(".jpg"):  # Check for image files
-        img_path = os.path.join(folder_path, filename)
-        output_path = os.path.join(result_path, filename)
+    if file_path.endswith(".png") or file_path.endswith(".jpg"):  # Check for image files
+        img_path = os.path.join(file_path)
+        file_name = os.path.basename(file_path)
+        file_parent_dir = os.path.dirname(file_path)
+        file_parent_dir_name = os.path.basename(file_parent_dir)
+
+        output_dir = os.path.join(result_path, file_parent_dir_name)
+        os.makedirs(output_dir, exist_ok=True)
+        # output_path = os.path.join(result_path, file_name)
+        output_path = os.path.join(output_dir, file_name)
+
+
         keep_largest_component(img_path, output_path)
 

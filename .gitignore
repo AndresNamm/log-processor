@@ -2,3 +2,7 @@
 .venv
 venv
 *.zip
+*.JPEG
+*.jpg
+*.jpeg
+*.JPG

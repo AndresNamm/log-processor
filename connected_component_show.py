@@ -1,8 +1,10 @@
-img = 'all/IMG_0055_00000.png'
+
 
 import cv2
 import numpy as np
 
+
+img = "segmentations\\IMG_0071\\00014.png"
 #    - If your image is already strictly black/white, this is just to ensure we have a single channel.
 img = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
 
@@ -30,6 +32,9 @@ for label_idx in range(1, num_labels):
     cv2.rectangle(color_img, (x, y), (x + w, y + h), (255, 255, 255), 2)
 
 # Display the image with colored components and bounding boxes
-cv2.imshow('Connected Components', color_img)
+cv2.namedWindow('Connected Components', cv2.WINDOW_NORMAL)
+cv2.resizeWindow('Connected Components', color_img.shape[1]//4, color_img.shape[0]//4)
+resized = cv2.resize(color_img, (color_img.shape[1], color_img.shape[0]))
+cv2.imshow('Connected Components', resized)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
